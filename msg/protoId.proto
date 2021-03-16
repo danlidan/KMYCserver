@@ -1,0 +1,11 @@
+syntax = "proto3";
+package msg;
+
+//protoc --go_out=. xxx.proto
+
+enum ProtoId{
+    RegisterReqId = 0;
+    RegisterRspId = 1;
+    LoginReqId = 2;
+    LoginRspId = 3;
+}

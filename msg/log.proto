@@ -1,0 +1,27 @@
+syntax = "proto3";
+package msg;
+
+//protoc --go_out=. xxx.proto
+
+// id : 0
+message RegisterReq{
+    string name = 1;
+    string pass = 2;
+}
+
+// id : 1
+message RegisterRsp{
+    bool success = 1;
+}
+
+
+// id : 2
+message LoginReq {
+    string name = 1;
+    string pass = 2;
+}
+
+// id : 3
+message LoginRsp {
+    bool success = 1;
+}
