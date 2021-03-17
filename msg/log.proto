@@ -24,4 +24,6 @@ message LoginReq {
 // id : 3
 message LoginRsp {
     bool success = 1;
+    string name = 2;
+    int32 rank = 3;
 }

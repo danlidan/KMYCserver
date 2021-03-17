@@ -23,12 +23,12 @@ type TCPManager struct {
 func (m *TCPManager) Receive() {
 	Allbuffer := make([]byte, 4096)
 
-	defer log.Info("tcp conn break ", m.conn.RemoteAddr())
-
 	for {
 		msglen, err := m.conn.Read(Allbuffer)
 		if err != nil {
 			//断线
+			log.Info("tcp conn break ", m.conn.RemoteAddr())
+			m.UserOffLine()
 			return
 		}
 
@@ -42,17 +42,30 @@ func (m *TCPManager) Receive() {
 
 			log.Info("receive msg ", buffer)
 
+			//获取协议的id
 			switch id {
 			case uint16(msg.ProtoId_RegisterReqId):
 				resData := &msg.RegisterReq{}
 				proto.Unmarshal(buffer[4:], resData)
 				log.Info("register req name ", resData.Name, " pass ", resData.Pass)
 				go m.RecvRegisterReq(resData)
+			case uint16(msg.ProtoId_LoginReqId):
+				resData := &msg.LoginReq{}
+				proto.Unmarshal(buffer[4:], resData)
+				log.Info("login req name ", resData.Name, " pass ", resData.Pass)
+				go m.RecvLoginReq(resData)
 			}
 		}
 	}
 }
 
-func (m *TCPManager) SendProto() {
-
+//处理玩家离线
+func (m *TCPManager) UserOffLine() {
+	//若已经登录
+	if m.user != nil {
+		//OnlineUser中去除之
+		OnlineUsers.Lock()
+		delete(OnlineUsers.Users, m.user.name)
+		OnlineUsers.Unlock()
+	}
 }
