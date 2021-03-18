@@ -77,8 +77,9 @@ func (m *TCPManager) RecvLoginReq(data *msg.LoginReq) {
 
 	//新建user结构体，关联到TCPManager
 	m.user = &User{
-		name: data.Name,
-		rank: int32(TrueRank),
+		name:        data.Name,
+		rank:        int32(TrueRank),
+		connManager: m,
 	}
 
 	//加入OnlineUsers
@@ -90,4 +91,74 @@ func (m *TCPManager) RecvLoginReq(data *msg.LoginReq) {
 		Name:    data.Name,
 		Rank:    int32(TrueRank),
 	})
+}
+
+func (m *TCPManager) matchV1(playernum int) {
+	MatchUsers.Lock()
+	defer MatchUsers.Unlock()
+	//准备所有匹配的玩家
+	UsersToBegin := make([]*User, 0)
+	//加入当前玩家
+	UsersToBegin = append(UsersToBegin, m.user)
+	for len(MatchUsers.Users) > 0 && len(UsersToBegin) < playernum {
+		tmpUser := MatchUsers.Users[0]
+		//排除所有已经不再匹配的玩家
+		if tmpUser.IsMatching {
+			UsersToBegin = append(UsersToBegin, tmpUser)
+		}
+		MatchUsers.Users = MatchUsers.Users[1:]
+	}
+	//UsersToBegin,或者人数不足，此时matchusers为空，或者人数足够
+	if len(UsersToBegin) == playernum {
+		//人数足够，通知被匹配的玩家开始
+		for _, user := range UsersToBegin {
+			user.IsMatching = false
+		}
+		//todo:通知开始游戏
+		for _, user := range UsersToBegin {
+			//创建对应的player
+			user.player = &Player{}
+			user.connManager.SendMatchRsp(&msg.MatchRsp{})
+		}
+	} else {
+		//人数不足
+		m.user.IsMatching = true
+		MatchUsers.Users = UsersToBegin
+	}
+
+}
+
+//玩家开始匹配
+func (m *TCPManager) RecvMatchReq(data *msg.MatchReq) {
+	if m.user.IsMatching {
+		log.Error("already matching!", m.user.name)
+		return
+	}
+
+	switch data.Type {
+	case 0:
+		//1v1，玩家数2人，加入当前玩家
+		m.matchV1(2)
+	case 1:
+		//2v2, 玩家数4人
+		m.matchV1(4)
+	default:
+		log.Error("wrong match req type ", data.Type)
+		return
+	}
+}
+
+//玩家取消匹配
+func (m *TCPManager) RecvMatchCancelReq(data *msg.MatchCancelReq) {
+	MatchUsers.Lock()
+	defer MatchUsers.Unlock()
+	//已经开始游戏
+	if m.user.player != nil {
+		//获得锁后已经开始
+		m.SendMatchCancelRsp(&msg.MatchCancelRsp{Success: false})
+	} else {
+		//获得锁后未开始
+		m.user.IsMatching = false
+		m.SendMatchCancelRsp(&msg.MatchCancelRsp{Success: true})
+	}
 }

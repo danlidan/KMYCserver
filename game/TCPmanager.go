@@ -54,6 +54,18 @@ func (m *TCPManager) Receive() {
 				proto.Unmarshal(buffer[4:], resData)
 				log.Info("login req name ", resData.Name, " pass ", resData.Pass)
 				go m.RecvLoginReq(resData)
+			case uint16(msg.ProtoId_MatchReqId):
+				resData := &msg.MatchReq{}
+				proto.Unmarshal(buffer[4:], resData)
+				log.Info("match req type ", resData.Type)
+				go m.RecvMatchReq(resData)
+			case uint16(msg.ProtoId_MatchCancelReqId):
+				resData := &msg.MatchCancelReq{}
+				proto.Unmarshal(buffer[4:], resData)
+				log.Info("match cancel req")
+				go m.RecvMatchCancelReq(resData)
+			default:
+				log.Error("wrong proto id ", id)
 			}
 		}
 	}
@@ -63,6 +75,8 @@ func (m *TCPManager) Receive() {
 func (m *TCPManager) UserOffLine() {
 	//若已经登录
 	if m.user != nil {
+		//总之设为false
+		m.user.IsMatching = false
 		//OnlineUser中去除之
 		OnlineUsers.Lock()
 		delete(OnlineUsers.Users, m.user.name)

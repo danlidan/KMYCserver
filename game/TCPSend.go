@@ -28,3 +28,25 @@ func (m *TCPManager) SendLoginRsp(data *msg.LoginRsp) {
 	sendMsg = append(sendMsg, mm...)
 	m.conn.Write(sendMsg)
 }
+
+func (m *TCPManager) SendMatchRsp(data *msg.MatchRsp) {
+	mm, _ := proto.Marshal(data)
+	sendMsg := make([]byte, 4)
+
+	binary.BigEndian.PutUint16(sendMsg, uint16(2+len(mm)))
+	binary.BigEndian.PutUint16(sendMsg[2:], uint16(msg.ProtoId_MatchRspId))
+
+	sendMsg = append(sendMsg, mm...)
+	m.conn.Write(sendMsg)
+}
+
+func (m *TCPManager) SendMatchCancelRsp(data *msg.MatchCancelRsp) {
+	mm, _ := proto.Marshal(data)
+	sendMsg := make([]byte, 4)
+
+	binary.BigEndian.PutUint16(sendMsg, uint16(2+len(mm)))
+	binary.BigEndian.PutUint16(sendMsg[2:], uint16(msg.ProtoId_MatchCancelRspId))
+
+	sendMsg = append(sendMsg, mm...)
+	m.conn.Write(sendMsg)
+}

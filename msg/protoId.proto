@@ -8,4 +8,8 @@ enum ProtoId{
     RegisterRspId = 1;
     LoginReqId = 2;
     LoginRspId = 3;
+    MatchReqId = 4;
+    MatchRspId = 5;
+    MatchCancelReqId = 6;
+    MatchCancelRspId = 7;
 }

@@ -27,3 +27,25 @@ message LoginRsp {
     string name = 2;
     int32 rank = 3;
 }
+
+// id : 4, 请求匹配
+message MatchReq {
+    int32 type = 1; // 0 : 1v1, 1 : 2v2
+}
+
+// id : 5, 匹配成功
+message MatchRsp {
+
+}
+
+// id : 6
+message MatchCancelReq {
+
+}
+
+// id : 7
+message MatchCancelRsp {
+    bool success = 1;
+}
+
+
