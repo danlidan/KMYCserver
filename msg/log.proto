@@ -33,9 +33,17 @@ message MatchReq {
     int32 type = 1; // 0 : 1v1, 1 : 2v2
 }
 
+message playerInfoBegin {
+    int32 playerId = 1;
+    string name = 2;
+    int32 rank = 3;
+}
+
 // id : 5, 匹配成功
 message MatchRsp {
-
+    int32 playerNum = 1; //总玩家数
+    int32 myPlayerId = 2; //该玩家编号 0 ~ playerNum - 1
+    repeated playerInfoBegin players = 3;
 }
 
 // id : 6

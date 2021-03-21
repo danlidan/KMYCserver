@@ -297,17 +297,84 @@ func (x *MatchReq) GetType() int32 {
 	return 0
 }
 
+type PlayerInfoBegin struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	PlayerId int32  `protobuf:"varint,1,opt,name=playerId,proto3" json:"playerId,omitempty"`
+	Name     string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Rank     int32  `protobuf:"varint,3,opt,name=rank,proto3" json:"rank,omitempty"`
+}
+
+func (x *PlayerInfoBegin) Reset() {
+	*x = PlayerInfoBegin{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_log_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PlayerInfoBegin) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PlayerInfoBegin) ProtoMessage() {}
+
+func (x *PlayerInfoBegin) ProtoReflect() protoreflect.Message {
+	mi := &file_log_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PlayerInfoBegin.ProtoReflect.Descriptor instead.
+func (*PlayerInfoBegin) Descriptor() ([]byte, []int) {
+	return file_log_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *PlayerInfoBegin) GetPlayerId() int32 {
+	if x != nil {
+		return x.PlayerId
+	}
+	return 0
+}
+
+func (x *PlayerInfoBegin) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *PlayerInfoBegin) GetRank() int32 {
+	if x != nil {
+		return x.Rank
+	}
+	return 0
+}
+
 // id : 5, 匹配成功
 type MatchRsp struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	PlayerNum  int32              `protobuf:"varint,1,opt,name=playerNum,proto3" json:"playerNum,omitempty"`   //总玩家数
+	MyPlayerId int32              `protobuf:"varint,2,opt,name=myPlayerId,proto3" json:"myPlayerId,omitempty"` //该玩家编号 0 ~ playerNum - 1
+	Players    []*PlayerInfoBegin `protobuf:"bytes,3,rep,name=players,proto3" json:"players,omitempty"`
 }
 
 func (x *MatchRsp) Reset() {
 	*x = MatchRsp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_log_proto_msgTypes[5]
+		mi := &file_log_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -320,7 +387,7 @@ func (x *MatchRsp) String() string {
 func (*MatchRsp) ProtoMessage() {}
 
 func (x *MatchRsp) ProtoReflect() protoreflect.Message {
-	mi := &file_log_proto_msgTypes[5]
+	mi := &file_log_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -333,7 +400,28 @@ func (x *MatchRsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MatchRsp.ProtoReflect.Descriptor instead.
 func (*MatchRsp) Descriptor() ([]byte, []int) {
-	return file_log_proto_rawDescGZIP(), []int{5}
+	return file_log_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *MatchRsp) GetPlayerNum() int32 {
+	if x != nil {
+		return x.PlayerNum
+	}
+	return 0
+}
+
+func (x *MatchRsp) GetMyPlayerId() int32 {
+	if x != nil {
+		return x.MyPlayerId
+	}
+	return 0
+}
+
+func (x *MatchRsp) GetPlayers() []*PlayerInfoBegin {
+	if x != nil {
+		return x.Players
+	}
+	return nil
 }
 
 // id : 6
@@ -346,7 +434,7 @@ type MatchCancelReq struct {
 func (x *MatchCancelReq) Reset() {
 	*x = MatchCancelReq{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_log_proto_msgTypes[6]
+		mi := &file_log_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -359,7 +447,7 @@ func (x *MatchCancelReq) String() string {
 func (*MatchCancelReq) ProtoMessage() {}
 
 func (x *MatchCancelReq) ProtoReflect() protoreflect.Message {
-	mi := &file_log_proto_msgTypes[6]
+	mi := &file_log_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -372,7 +460,7 @@ func (x *MatchCancelReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MatchCancelReq.ProtoReflect.Descriptor instead.
 func (*MatchCancelReq) Descriptor() ([]byte, []int) {
-	return file_log_proto_rawDescGZIP(), []int{6}
+	return file_log_proto_rawDescGZIP(), []int{7}
 }
 
 // id : 7
@@ -387,7 +475,7 @@ type MatchCancelRsp struct {
 func (x *MatchCancelRsp) Reset() {
 	*x = MatchCancelRsp{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_log_proto_msgTypes[7]
+		mi := &file_log_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -400,7 +488,7 @@ func (x *MatchCancelRsp) String() string {
 func (*MatchCancelRsp) ProtoMessage() {}
 
 func (x *MatchCancelRsp) ProtoReflect() protoreflect.Message {
-	mi := &file_log_proto_msgTypes[7]
+	mi := &file_log_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -413,7 +501,7 @@ func (x *MatchCancelRsp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MatchCancelRsp.ProtoReflect.Descriptor instead.
 func (*MatchCancelRsp) Descriptor() ([]byte, []int) {
-	return file_log_proto_rawDescGZIP(), []int{7}
+	return file_log_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *MatchCancelRsp) GetSuccess() bool {
@@ -443,12 +531,24 @@ var file_log_proto_rawDesc = []byte{
 	0x0a, 0x04, 0x72, 0x61, 0x6e, 0x6b, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x72, 0x61,
 	0x6e, 0x6b, 0x22, 0x1e, 0x0a, 0x08, 0x4d, 0x61, 0x74, 0x63, 0x68, 0x52, 0x65, 0x71, 0x12, 0x12,
 	0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x74, 0x79,
-	0x70, 0x65, 0x22, 0x0a, 0x0a, 0x08, 0x4d, 0x61, 0x74, 0x63, 0x68, 0x52, 0x73, 0x70, 0x22, 0x10,
-	0x0a, 0x0e, 0x4d, 0x61, 0x74, 0x63, 0x68, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x52, 0x65, 0x71,
-	0x22, 0x2a, 0x0a, 0x0e, 0x4d, 0x61, 0x74, 0x63, 0x68, 0x43, 0x61, 0x6e, 0x63, 0x65, 0x6c, 0x52,
-	0x73, 0x70, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x70, 0x65, 0x22, 0x55, 0x0a, 0x0f, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x49, 0x6e, 0x66, 0x6f,
+	0x42, 0x65, 0x67, 0x69, 0x6e, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x49,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x49,
+	0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x72, 0x61, 0x6e, 0x6b, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x05, 0x52, 0x04, 0x72, 0x61, 0x6e, 0x6b, 0x22, 0x78, 0x0a, 0x08, 0x4d, 0x61, 0x74,
+	0x63, 0x68, 0x52, 0x73, 0x70, 0x12, 0x1c, 0x0a, 0x09, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x4e,
+	0x75, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x09, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72,
+	0x4e, 0x75, 0x6d, 0x12, 0x1e, 0x0a, 0x0a, 0x6d, 0x79, 0x50, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x49,
+	0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x0a, 0x6d, 0x79, 0x50, 0x6c, 0x61, 0x79, 0x65,
+	0x72, 0x49, 0x64, 0x12, 0x2e, 0x0a, 0x07, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x73, 0x18, 0x03,
+	0x20, 0x03, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x6d, 0x73, 0x67, 0x2e, 0x70, 0x6c, 0x61, 0x79, 0x65,
+	0x72, 0x49, 0x6e, 0x66, 0x6f, 0x42, 0x65, 0x67, 0x69, 0x6e, 0x52, 0x07, 0x70, 0x6c, 0x61, 0x79,
+	0x65, 0x72, 0x73, 0x22, 0x10, 0x0a, 0x0e, 0x4d, 0x61, 0x74, 0x63, 0x68, 0x43, 0x61, 0x6e, 0x63,
+	0x65, 0x6c, 0x52, 0x65, 0x71, 0x22, 0x2a, 0x0a, 0x0e, 0x4d, 0x61, 0x74, 0x63, 0x68, 0x43, 0x61,
+	0x6e, 0x63, 0x65, 0x6c, 0x52, 0x73, 0x70, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65,
+	0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73,
+	0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -463,23 +563,25 @@ func file_log_proto_rawDescGZIP() []byte {
 	return file_log_proto_rawDescData
 }
 
-var file_log_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_log_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_log_proto_goTypes = []interface{}{
-	(*RegisterReq)(nil),    // 0: msg.RegisterReq
-	(*RegisterRsp)(nil),    // 1: msg.RegisterRsp
-	(*LoginReq)(nil),       // 2: msg.LoginReq
-	(*LoginRsp)(nil),       // 3: msg.LoginRsp
-	(*MatchReq)(nil),       // 4: msg.MatchReq
-	(*MatchRsp)(nil),       // 5: msg.MatchRsp
-	(*MatchCancelReq)(nil), // 6: msg.MatchCancelReq
-	(*MatchCancelRsp)(nil), // 7: msg.MatchCancelRsp
+	(*RegisterReq)(nil),     // 0: msg.RegisterReq
+	(*RegisterRsp)(nil),     // 1: msg.RegisterRsp
+	(*LoginReq)(nil),        // 2: msg.LoginReq
+	(*LoginRsp)(nil),        // 3: msg.LoginRsp
+	(*MatchReq)(nil),        // 4: msg.MatchReq
+	(*PlayerInfoBegin)(nil), // 5: msg.playerInfoBegin
+	(*MatchRsp)(nil),        // 6: msg.MatchRsp
+	(*MatchCancelReq)(nil),  // 7: msg.MatchCancelReq
+	(*MatchCancelRsp)(nil),  // 8: msg.MatchCancelRsp
 }
 var file_log_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	5, // 0: msg.MatchRsp.players:type_name -> msg.playerInfoBegin
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_log_proto_init() }
@@ -549,7 +651,7 @@ func file_log_proto_init() {
 			}
 		}
 		file_log_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MatchRsp); i {
+			switch v := v.(*PlayerInfoBegin); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -561,7 +663,7 @@ func file_log_proto_init() {
 			}
 		}
 		file_log_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MatchCancelReq); i {
+			switch v := v.(*MatchRsp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -573,6 +675,18 @@ func file_log_proto_init() {
 			}
 		}
 		file_log_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MatchCancelReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_log_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MatchCancelRsp); i {
 			case 0:
 				return &v.state
@@ -591,7 +705,7 @@ func file_log_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_log_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

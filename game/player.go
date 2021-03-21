@@ -1,5 +1,6 @@
 package game
 
 type Player struct {
-	user *User
+	user     *User
+	playerId int32
 }

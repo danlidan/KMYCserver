@@ -115,11 +115,28 @@ func (m *TCPManager) matchV1(playernum int) {
 			user.IsMatching = false
 		}
 		//todo:通知开始游戏
-		for _, user := range UsersToBegin {
+		playerInfo := make([]*msg.PlayerInfoBegin, 0)
+		for idx, user := range UsersToBegin {
 			//创建对应的player
-			user.player = &Player{}
-			user.connManager.SendMatchRsp(&msg.MatchRsp{})
+			user.player = &Player{
+				user:     user,
+				playerId: int32(idx),
+			}
+			playerInfo = append(playerInfo, &msg.PlayerInfoBegin{
+				PlayerId: int32(idx),
+				Name:     user.name,
+				Rank:     user.rank,
+			})
 		}
+		//通知开始,发送初始信息
+		for idx, user := range UsersToBegin {
+			user.connManager.SendMatchRsp(&msg.MatchRsp{
+				PlayerNum:  int32(playernum),
+				MyPlayerId: int32(idx),
+				Players:    playerInfo,
+			})
+		}
+
 	} else {
 		//人数不足
 		m.user.IsMatching = true
