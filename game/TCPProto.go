@@ -145,6 +145,9 @@ func (m *TCPManager) matchV1(playernum int) {
 
 		log.Info("begin game roomid ", newRoom.roomId)
 
+		//房间执行开始游戏逻辑
+		go newRoom.OnGameBegin()
+
 		//通知开始,发送初始信息
 		for idx, user := range UsersToBegin {
 			user.connManager.SendMatchRsp(&msg.MatchRsp{

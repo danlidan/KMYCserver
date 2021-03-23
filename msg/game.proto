@@ -7,3 +7,28 @@ message Frame {
     string testInfo = 1;
 }
 
+//一个操作
+message OptionEvent {
+    int32 playerId = 1; //玩家id
+    int32 optType = 2; //操作类型
+}
+
+//一帧对应的操作
+message FrameOpts {
+    int32 frameId = 1;
+    repeated OptionEvent opts = 2;
+}
+
+//发送给客户端的同步消息，包含未同步的帧，frameid为最后一帧的id
+message LogicFrame {
+    int32 frameId = 1;
+    repeated FrameOpts unsyncFrames = 2;
+}
+
+//接收来自客户端的同步消息，包含某房间某玩家某一帧的所有操作
+message NextFrameOpts {
+    int32 frameId = 1;
+    int32 roomId = 2;
+    int32 playerId = 3;
+    repeated OptionEvent opts = 4;
+}

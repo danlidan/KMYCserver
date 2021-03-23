@@ -18,6 +18,7 @@ type UDPmanager struct {
 // len 为 message的长度，不包括len本身
 // len 为大端编码
 
+//接收的内容始终为nextFrameOpts类型
 func (m *UDPmanager) Receive() {
 	Allbuffer := make([]byte, 4096)
 
