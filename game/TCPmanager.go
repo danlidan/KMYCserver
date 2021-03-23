@@ -72,6 +72,7 @@ func (m *TCPManager) Receive() {
 }
 
 //处理玩家离线
+//to do : 房间的处理方式
 func (m *TCPManager) UserOffLine() {
 	//若已经登录
 	if m.user != nil {

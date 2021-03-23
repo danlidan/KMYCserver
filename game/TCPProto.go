@@ -115,19 +115,36 @@ func (m *TCPManager) matchV1(playernum int) {
 			user.IsMatching = false
 		}
 		//todo:通知开始游戏
+		//创建对应的room
+		newRoom := &Room{
+			roomId:  RoomId.GetNewRoomId(),
+			players: make([]*Player, playernum),
+		}
+
 		playerInfo := make([]*msg.PlayerInfoBegin, 0)
 		for idx, user := range UsersToBegin {
 			//创建对应的player
 			user.player = &Player{
 				user:     user,
 				playerId: int32(idx),
+				room:     newRoom,
 			}
 			playerInfo = append(playerInfo, &msg.PlayerInfoBegin{
 				PlayerId: int32(idx),
 				Name:     user.name,
 				Rank:     user.rank,
 			})
+			//加入对应的房间
+			newRoom.players[idx] = user.player
 		}
+
+		//房间加入全局变量Rooms
+		RoomsMap.Lock()
+		RoomsMap.Rooms[newRoom.roomId] = newRoom
+		RoomsMap.Unlock()
+
+		log.Info("begin game roomid ", newRoom.roomId)
+
 		//通知开始,发送初始信息
 		for idx, user := range UsersToBegin {
 			user.connManager.SendMatchRsp(&msg.MatchRsp{

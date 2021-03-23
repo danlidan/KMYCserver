@@ -1,0 +1,9 @@
+syntax = "proto3";
+package msg;
+
+//protoc --go_out=. xxx.proto
+
+message Frame {
+    string testInfo = 1;
+}
+

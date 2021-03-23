@@ -16,7 +16,7 @@ func TcpConnect() {
 	tcpListener, _ := net.ListenTCP("tcp", tcpAddr)
 	defer tcpListener.Close()
 
-	log.Info("server ready to read from ", config.TCPAddr)
+	log.Info("server ready to read tcp from ", config.TCPAddr)
 
 	for {
 		tcpConn, err := tcpListener.AcceptTCP()
