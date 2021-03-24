@@ -4,7 +4,6 @@ import (
 	"KMYCserver/msg"
 	"encoding/binary"
 	"net"
-	"time"
 
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/protobuf/proto"
@@ -34,18 +33,18 @@ func (m *UDPmanager) Receive() {
 			buffer := Allbuffer[curidx : curidx+int(len)+2]
 			curidx += int(len) + 2
 
-			resData := &msg.Frame{}
+			resData := &msg.NextFrameOpts{}
 			proto.Unmarshal(buffer[2:], resData)
 
-			go m.testSend(buffer, remoteAddr)
-
-			log.Info("recv udp msg ", resData.TestInfo, remoteAddr)
+			go RecvNextFrameOpts(resData, remoteAddr)
 		}
 	}
 }
 
+/*
 func (m *UDPmanager) testSend(b []byte, addr *net.UDPAddr) {
 	time.Sleep(time.Second * 3)
 	log.Info("send message back to addr ", addr)
 	m.conn.WriteToUDP(b, addr)
 }
+*/

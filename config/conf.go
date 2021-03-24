@@ -5,5 +5,5 @@ import "time"
 const (
 	TCPAddr  = "127.0.0.1:19312"
 	UDPAddr  = "127.0.0.1:19313"
-	LoginGap = time.Millisecond * 50 //逻辑帧的间隔
+	LogicGap = time.Millisecond * 50 //逻辑帧的间隔
 )

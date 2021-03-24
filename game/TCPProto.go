@@ -117,8 +117,10 @@ func (m *TCPManager) matchV1(playernum int) {
 		//todo:通知开始游戏
 		//创建对应的room
 		newRoom := &Room{
-			roomId:  RoomId.GetNewRoomId(),
-			players: make([]*Player, playernum),
+			roomId:    RoomId.GetNewRoomId(),
+			playerNum: playernum,
+			players:   make([]*Player, playernum),
+			frameId:   0, //目前执行到的逻辑帧id
 		}
 
 		playerInfo := make([]*msg.PlayerInfoBegin, 0)
@@ -128,6 +130,7 @@ func (m *TCPManager) matchV1(playernum int) {
 				user:     user,
 				playerId: int32(idx),
 				room:     newRoom,
+				syncId:   -1, //初始化已同步的帧id为-1
 			}
 			playerInfo = append(playerInfo, &msg.PlayerInfoBegin{
 				PlayerId: int32(idx),
@@ -146,7 +149,7 @@ func (m *TCPManager) matchV1(playernum int) {
 		log.Info("begin game roomid ", newRoom.roomId)
 
 		//房间执行开始游戏逻辑
-		go newRoom.OnGameBegin()
+		newRoom.OnGameBegin()
 
 		//通知开始,发送初始信息
 		for idx, user := range UsersToBegin {
