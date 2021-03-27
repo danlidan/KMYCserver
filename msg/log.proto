@@ -43,7 +43,8 @@ message playerInfoBegin {
 message MatchRsp {
     int32 playerNum = 1; //总玩家数
     int32 myPlayerId = 2; //该玩家编号 0 ~ playerNum - 1
-    repeated playerInfoBegin players = 3;
+    int32 roomId = 3;
+    repeated playerInfoBegin players = 4;
 }
 
 // id : 6

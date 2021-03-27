@@ -157,6 +157,7 @@ func (m *TCPManager) matchV1(playernum int) {
 				PlayerNum:  int32(playernum),
 				MyPlayerId: int32(idx),
 				Players:    playerInfo,
+				RoomId:     newRoom.roomId,
 			})
 		}
 

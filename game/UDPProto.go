@@ -15,6 +15,7 @@ func RecvNextFrameOpts(data *msg.NextFrameOpts, addr *net.UDPAddr) {
 
 	if room == nil {
 		log.Error("on recv next Frame opts get room id error ", data.RoomId)
+		return
 	}
 
 	room.RecvNextFrameOpts(data, addr)

@@ -13,3 +13,7 @@ enum ProtoId{
     MatchCancelReqId = 6;
     MatchCancelRspId = 7;
 }
+
+enum OptionType{
+    MoveId = 0;
+}
