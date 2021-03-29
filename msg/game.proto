@@ -13,6 +13,7 @@ message OptionEvent {
     int32 optType = 2; //操作类型
     float eastValue = 3; //东西方向按键
     float northValue = 4; //南北方向按键
+    float charRotattion = 5; //角色旋转方向
 }
 
 //一帧对应的操作
