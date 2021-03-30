@@ -19,6 +19,7 @@ type Room struct {
 	frameId     int32            //目前游戏已经进行到的帧数
 	matchFrames []*msg.FrameOpts //保存游戏目前为止的所有帧，下标对应帧号
 	nextFrame   *msg.FrameOpts   //下一帧的所有操作
+	endGame     bool
 }
 
 //游戏收集全部帧0后才能开始(收集udp地址)
@@ -47,6 +48,10 @@ func (r *Room) OnGameBegin() {
 		ticker := time.NewTicker(config.LogicGap)
 		for _ = range ticker.C {
 			r.Lock()
+			if r.endGame {
+				r.Unlock()
+				break
+			}
 			r.OnLogicSend()
 			r.Unlock()
 		}
@@ -60,7 +65,9 @@ func (r *Room) OnLogicSend() {
 	log.Info("send frame ", r.frameId)
 	//发送未同步的帧
 	for _, p := range r.players {
-		r.SendUnsyncFrames(p)
+		if p.udpAddr != nil {
+			r.SendUnsyncFrames(p)
+		}
 	}
 
 	//当前帧加一

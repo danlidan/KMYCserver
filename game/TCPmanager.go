@@ -29,6 +29,7 @@ func (m *TCPManager) Receive() {
 			//断线
 			log.Info("tcp conn break ", m.conn.RemoteAddr())
 			m.UserOffLine()
+			m.conn.Close()
 			return
 		}
 
@@ -78,9 +79,36 @@ func (m *TCPManager) UserOffLine() {
 	if m.user != nil {
 		//总之设为false
 		m.user.IsMatching = false
+
+		if m.user.player != nil {
+			m.user.player.room.Lock()
+			m.user.player.udpAddr = nil
+
+			//判断是否房间所有人已经掉线
+			noOne := true
+			for _, p := range m.user.player.room.players {
+				if p.udpAddr != nil {
+					noOne = false
+				}
+			}
+			if noOne {
+				//房间结束游戏
+				m.user.player.room.endGame = true
+			}
+			m.user.player.room.Unlock()
+
+			//从roomsmap中去除该房间
+			if noOne {
+				log.Info("delete room ", m.user.player.room.roomId)
+				RoomsMap.Lock()
+				delete(RoomsMap.Rooms, m.user.player.room.roomId)
+				RoomsMap.Unlock()
+			}
+		}
 		//OnlineUser中去除之
 		OnlineUsers.Lock()
 		delete(OnlineUsers.Users, m.user.name)
 		OnlineUsers.Unlock()
+
 	}
 }

@@ -47,7 +47,7 @@ func (m *TCPManager) RecvLoginReq(data *msg.LoginReq) {
 	defer redisconn.Close()
 
 	//已经在线
-	if OnlineUsers.Users[data.Name] {
+	if OnlineUsers.Users[data.Name] != nil {
 		log.Info("already logged in ", data.Name)
 		m.SendLoginRsp(&msg.LoginRsp{
 			Success: false,
@@ -83,7 +83,7 @@ func (m *TCPManager) RecvLoginReq(data *msg.LoginReq) {
 	}
 
 	//加入OnlineUsers
-	OnlineUsers.Users[data.Name] = true
+	OnlineUsers.Users[data.Name] = m.user
 
 	//发送消息
 	m.SendLoginRsp(&msg.LoginRsp{

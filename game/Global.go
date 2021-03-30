@@ -4,7 +4,7 @@ import "sync"
 
 type UsersMap struct {
 	sync.Mutex
-	Users map[string]bool
+	Users map[string]*User
 }
 
 type MatchPool struct {
@@ -25,7 +25,7 @@ type RoomIdMgr struct {
 var (
 	//保存所有在线角色的map， name->bool
 	OnlineUsers = &UsersMap{
-		Users: make(map[string]bool),
+		Users: make(map[string]*User),
 	}
 	//匹配池，目前为简单机制
 	MatchUsers = &MatchPool{
