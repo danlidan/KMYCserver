@@ -10,10 +10,16 @@ message Frame {
 //一个操作
 message OptionEvent {
     int32 playerId = 1; //玩家id
-    int32 optType = 2; //操作类型
-    float eastValue = 3; //东西方向按键
-    float northValue = 4; //南北方向按键
-    float charRotattion = 5; //角色旋转方向
+    int32 optType = 2; //操作类型 0 ： 移动， 1 : 射击
+    float eastValue = 3; //东西方向按键 0
+    float northValue = 4; //南北方向按键 0
+    float charRotattion = 5; //角色旋转方向 0
+    float bulletVecX = 6;
+    float bulletVecY = 7;
+    float bulletVecZ = 8; //子弹方向单位向量 1
+    float fireStartVecX = 9;
+    float fireStartVecY = 10;
+    float fireStartVecZ = 11; //子弹生成坐标 1
 }
 
 //一帧对应的操作
