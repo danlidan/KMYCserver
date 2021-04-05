@@ -80,9 +80,11 @@ func (m *TCPManager) UserOffLine() {
 		//总之设为false
 		m.user.IsMatching = false
 
+		//正在游戏中
 		if m.user.player != nil {
 			m.user.player.room.Lock()
 			m.user.player.udpAddr = nil
+			m.user.player.syncId = -1 //重新连接将帧号变为-1
 
 			//判断是否房间所有人已经掉线
 			noOne := true
@@ -103,12 +105,20 @@ func (m *TCPManager) UserOffLine() {
 				RoomsMap.Lock()
 				delete(RoomsMap.Rooms, m.user.player.room.roomId)
 				RoomsMap.Unlock()
+				//OnlineUser中去除该房间所有玩家
+				OnlineUsers.Lock()
+				for _, p := range m.user.player.room.players {
+					log.Info("delete usr ", p.user.name)
+					delete(OnlineUsers.Users, p.user.name)
+				}
+				OnlineUsers.Unlock()
 			}
+		} else {
+			//OnlineUser中去除之
+			OnlineUsers.Lock()
+			log.Info("delete user ", m.user.name)
+			delete(OnlineUsers.Users, m.user.name)
+			OnlineUsers.Unlock()
 		}
-		//OnlineUser中去除之
-		OnlineUsers.Lock()
-		delete(OnlineUsers.Users, m.user.name)
-		OnlineUsers.Unlock()
-
 	}
 }

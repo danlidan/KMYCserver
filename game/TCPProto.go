@@ -46,15 +46,6 @@ func (m *TCPManager) RecvLoginReq(data *msg.LoginReq) {
 	defer OnlineUsers.Unlock()
 	defer redisconn.Close()
 
-	//已经在线
-	if OnlineUsers.Users[data.Name] != nil {
-		log.Info("already logged in ", data.Name)
-		m.SendLoginRsp(&msg.LoginRsp{
-			Success: false,
-		})
-		return
-	}
-
 	//redis获取密码
 	TurePass, err := redis.String(redisconn.Do("HGET", dao.NamePassSet, data.Name))
 	if err != nil || TurePass == "" || TurePass != data.Pass {
@@ -65,6 +56,31 @@ func (m *TCPManager) RecvLoginReq(data *msg.LoginReq) {
 		})
 		return
 	}
+
+	//已经在线
+	if tmpuser := OnlineUsers.Users[data.Name]; tmpuser != nil {
+		if tmpuser.player != nil && tmpuser.player.udpAddr != nil {
+			log.Info("already logged in ", data.Name)
+			m.SendLoginRsp(&msg.LoginRsp{
+				Success: false,
+			})
+			return
+		}
+		//否则认为是掉线重连
+		log.Info("reconnect ", data.Name)
+		tmpuser.connManager = m
+		m.user = tmpuser
+
+		m.SendLoginRsp(&msg.LoginRsp{
+			Success: true,
+			Name:    tmpuser.name,
+			Rank:    tmpuser.rank,
+		})
+		//直接发送匹配消息
+		//m.SendMatchRsp(tmpuser.player.matchInfo)
+		return
+	}
+
 	//redis获取积分
 	TrueRank, err := redis.Int(redisconn.Do("HGET", dao.NameRankSet, data.Name))
 	if err != nil {
@@ -153,12 +169,13 @@ func (m *TCPManager) matchV1(playernum int) {
 
 		//通知开始,发送初始信息
 		for idx, user := range UsersToBegin {
-			user.connManager.SendMatchRsp(&msg.MatchRsp{
+			user.player.matchInfo = &msg.MatchRsp{
 				PlayerNum:  int32(playernum),
 				MyPlayerId: int32(idx),
 				Players:    playerInfo,
 				RoomId:     newRoom.roomId,
-			})
+			}
+			user.connManager.SendMatchRsp(user.player.matchInfo)
 		}
 
 	} else {

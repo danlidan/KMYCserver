@@ -24,17 +24,19 @@ type Room struct {
 
 //游戏收集全部帧0后才能开始(收集udp地址)
 func (r *Room) OnGameBegin() {
-	//每个50ms检查一次全部玩家是否存在udp地址
-	for {
-		for _, p := range r.players {
-			if p.udpAddr == nil {
-				time.Sleep(time.Millisecond * 50)
-				continue
+	/*
+		//每个50ms检查一次全部玩家是否存在udp地址
+		for {
+			for _, p := range r.players {
+				if p.udpAddr == nil {
+					time.Sleep(time.Millisecond * 50)
+					continue
+				}
 			}
+			break
 		}
-		break
-	}
-	//三秒后开始每隔50ms的广播
+	*/
+	//一秒后开始每隔50ms的广播
 	//初始化
 	r.frameId = 0
 	r.matchFrames = make([]*msg.FrameOpts, 0)
