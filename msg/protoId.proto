@@ -12,6 +12,7 @@ enum ProtoId{
     MatchRspId = 5;
     MatchCancelReqId = 6;
     MatchCancelRspId = 7;
+    UpateRankReqId = 8;
 }
 
 enum OptionType{

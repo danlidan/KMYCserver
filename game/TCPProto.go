@@ -3,6 +3,7 @@ package game
 import (
 	"KMYCserver/dao"
 	"KMYCserver/msg"
+	"time"
 
 	"github.com/gomodule/redigo/redis"
 	log "github.com/sirupsen/logrus"
@@ -167,6 +168,8 @@ func (m *TCPManager) matchV1(playernum int) {
 		//房间执行开始游戏逻辑
 		newRoom.OnGameBegin()
 
+		randSeed := int32(time.Now().Unix())
+
 		//通知开始,发送初始信息
 		for idx, user := range UsersToBegin {
 			user.player.matchInfo = &msg.MatchRsp{
@@ -174,6 +177,7 @@ func (m *TCPManager) matchV1(playernum int) {
 				MyPlayerId: int32(idx),
 				Players:    playerInfo,
 				RoomId:     newRoom.roomId,
+				RandomSeed: randSeed,
 			}
 			user.connManager.SendMatchRsp(user.player.matchInfo)
 		}
@@ -219,4 +223,18 @@ func (m *TCPManager) RecvMatchCancelReq(data *msg.MatchCancelReq) {
 		m.user.IsMatching = false
 		m.SendMatchCancelRsp(&msg.MatchCancelRsp{Success: true})
 	}
+}
+
+//更新rank
+func (m *TCPManager) RecvUpdateRankReq(data *msg.UpdateRankReq) {
+	conn, err := dao.ConnectRedis()
+	defer conn.Close()
+	if err != nil {
+		log.Error("redis error!", err)
+		return
+	}
+
+	log.Info("update rank", m.user.name, data.NewRank)
+	m.user.rank = data.NewRank
+	conn.Do("HSET", dao.NameRankSet, m.user.name, data.NewRank)
 }

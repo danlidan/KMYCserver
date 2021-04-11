@@ -65,6 +65,11 @@ func (m *TCPManager) Receive() {
 				proto.Unmarshal(buffer[4:], resData)
 				log.Info("match cancel req")
 				go m.RecvMatchCancelReq(resData)
+			case uint16(msg.ProtoId_UpateRankReqId):
+				resData := &msg.UpdateRankReq{}
+				proto.Unmarshal(buffer[4:], resData)
+				log.Info("update rank req")
+				go m.RecvUpdateRankReq(resData)
 			default:
 				log.Error("wrong proto id ", id)
 			}

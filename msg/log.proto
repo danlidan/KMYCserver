@@ -44,7 +44,8 @@ message MatchRsp {
     int32 playerNum = 1; //总玩家数
     int32 myPlayerId = 2; //该玩家编号 0 ~ playerNum - 1
     int32 roomId = 3;
-    repeated playerInfoBegin players = 4;
+    int32 randomSeed = 4; //随机数种子
+    repeated playerInfoBegin players = 5;
 }
 
 // id : 6
@@ -57,4 +58,8 @@ message MatchCancelRsp {
     bool success = 1;
 }
 
+// id : 8
+message UpdateRankReq{
+    int32 newRank = 1;
+}
 

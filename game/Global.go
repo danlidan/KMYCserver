@@ -42,7 +42,7 @@ var (
 		NextRoomId: 10000,
 	}
 	//每局游戏的最大游戏帧数
-	MaxFrameNum = 12000
+	MaxFrameNum = 9600
 )
 
 //获取一个新的房间号
