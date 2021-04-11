@@ -10,7 +10,7 @@ message Frame {
 //一个操作
 message OptionEvent {
     int32 playerId = 1; //玩家id
-    int32 optType = 2; //操作类型 0 ： 移动， 1 : 射击
+    int32 optType = 2; //操作类型 0 ： 移动， 1 : 射击， 2 ：换弹
     float eastValue = 3; //东西方向按键 0
     float northValue = 4; //南北方向按键 0
     float charRotattion = 5; //角色旋转方向 0

@@ -79,7 +79,7 @@ type OptionEvent struct {
 	unknownFields protoimpl.UnknownFields
 
 	PlayerId      int32   `protobuf:"varint,1,opt,name=playerId,proto3" json:"playerId,omitempty"`            //玩家id
-	OptType       int32   `protobuf:"varint,2,opt,name=optType,proto3" json:"optType,omitempty"`              //操作类型 0 ： 移动， 1 : 射击
+	OptType       int32   `protobuf:"varint,2,opt,name=optType,proto3" json:"optType,omitempty"`              //操作类型 0 ： 移动， 1 : 射击， 2 ：换弹
 	EastValue     float32 `protobuf:"fixed32,3,opt,name=eastValue,proto3" json:"eastValue,omitempty"`         //东西方向按键 0
 	NorthValue    float32 `protobuf:"fixed32,4,opt,name=northValue,proto3" json:"northValue,omitempty"`       //南北方向按键 0
 	CharRotattion float32 `protobuf:"fixed32,5,opt,name=charRotattion,proto3" json:"charRotattion,omitempty"` //角色旋转方向 0

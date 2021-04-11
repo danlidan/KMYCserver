@@ -36,6 +36,7 @@ func (r *Room) OnGameBegin() {
 			break
 		}
 	*/
+
 	//一秒后开始每隔50ms的广播
 	//初始化
 	r.frameId = 0
@@ -43,7 +44,7 @@ func (r *Room) OnGameBegin() {
 	r.nextFrame = &msg.FrameOpts{FrameId: r.frameId, Opts: make([]*msg.OptionEvent, 0)}
 
 	go func() {
-		time.Sleep(time.Second * 3)
+		time.Sleep(time.Second * 5)
 
 		log.Info("game begin ", r.roomId)
 		//逻辑帧间隔:50ms
@@ -51,6 +52,7 @@ func (r *Room) OnGameBegin() {
 		for _ = range ticker.C {
 			r.Lock()
 			if r.endGame {
+				r.EndGame()
 				r.Unlock()
 				break
 			}
@@ -58,6 +60,19 @@ func (r *Room) OnGameBegin() {
 			r.Unlock()
 		}
 	}()
+}
+
+func (r *Room) EndGame() {
+	//设置user的player为nil
+	for _, p := range r.players {
+		u := p.user
+		u.player = nil
+	}
+	//从roommap中删除这个房间
+	log.Info("delete room ", r.roomId)
+	RoomsMap.Lock()
+	delete(RoomsMap.Rooms, r.roomId)
+	RoomsMap.Unlock()
 }
 
 //用于每50ms同步广播全部客户端操作
@@ -74,6 +89,12 @@ func (r *Room) OnLogicSend() {
 
 	//当前帧加一
 	r.frameId++
+	if r.frameId >= int32(MaxFrameNum+5) {
+		//游戏抵达时限，结束
+		log.Info("time end room ", r.frameId)
+		r.endGame = true
+		return
+	}
 	//初始化新的下一帧
 	r.nextFrame = &msg.FrameOpts{FrameId: r.frameId, Opts: make([]*msg.OptionEvent, 0)}
 }

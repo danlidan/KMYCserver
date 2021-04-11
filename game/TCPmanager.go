@@ -97,7 +97,6 @@ func (m *TCPManager) UserOffLine() {
 				//房间结束游戏
 				m.user.player.room.endGame = true
 			}
-			m.user.player.room.Unlock()
 
 			//从roomsmap中去除该房间
 			if noOne {
@@ -113,6 +112,7 @@ func (m *TCPManager) UserOffLine() {
 				}
 				OnlineUsers.Unlock()
 			}
+			m.user.player.room.Unlock()
 		} else {
 			//OnlineUser中去除之
 			OnlineUsers.Lock()

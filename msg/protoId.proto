@@ -17,4 +17,5 @@ enum ProtoId{
 enum OptionType{
     MoveId = 0;
     ShootId = 1;
+    ReloadId = 2;
 }
