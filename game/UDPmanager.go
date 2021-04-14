@@ -13,7 +13,7 @@ type UDPmanager struct {
 	conn *net.UDPConn
 }
 
-// len 2Byte | protobuf message
+// len 4Byte | protobuf message
 // len 为 message的长度，不包括len本身
 // len 为大端编码
 
@@ -29,12 +29,12 @@ func (m *UDPmanager) Receive() {
 
 		curidx := 0
 		for curidx < msglen {
-			len := binary.BigEndian.Uint16(Allbuffer[curidx : curidx+2])
-			buffer := Allbuffer[curidx : curidx+int(len)+2]
-			curidx += int(len) + 2
+			len := binary.BigEndian.Uint32(Allbuffer[curidx : curidx+4])
+			buffer := Allbuffer[curidx : curidx+int(len)+4]
+			curidx += int(len) + 4
 
 			resData := &msg.NextFrameOpts{}
-			proto.Unmarshal(buffer[2:], resData)
+			proto.Unmarshal(buffer[4:], resData)
 
 			go RecvNextFrameOpts(resData, remoteAddr)
 		}
