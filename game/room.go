@@ -79,11 +79,18 @@ func (r *Room) EndGame() {
 func (r *Room) OnLogicSend() {
 	r.matchFrames = append(r.matchFrames, r.nextFrame)
 
-	log.Info("send frame ", r.frameId)
+	//log.Info("send frame ", r.frameId)
 	//发送未同步的帧
 	for _, p := range r.players {
 		if p.udpAddr != nil {
-			r.SendUnsyncFrames(p)
+			//如果上一帧发送小于100帧则正常发送
+			if p.lastSendNum < 50 {
+				r.SendUnsyncFrames(p)
+			} else {
+				log.Info(p.user.name, "send last frame num", p.lastSendNum)
+				//否则等待一段时间后发送
+				p.lastSendNum -= 50
+			}
 		}
 	}
 
@@ -103,16 +110,24 @@ func (r *Room) OnLogicSend() {
 func (r *Room) SendUnsyncFrames(p *Player) {
 	optFrames := make([]*msg.FrameOpts, 0)
 
+	//最多发送到第几帧，为了让udp发送顺利
+	sendMaxFrame := p.syncId + 500
+	if sendMaxFrame >= r.frameId {
+		sendMaxFrame = r.frameId
+	}
+
 	//从 syncid+1 到 frameid 发送帧
-	for i := p.syncId + 1; i <= r.frameId; i++ {
+	for i := p.syncId + 1; i <= sendMaxFrame; i++ {
 		optFrames = append(optFrames, r.matchFrames[i])
 	}
 
 	body := &msg.LogicFrame{
-		FrameId:      r.frameId,
+		FrameId:      sendMaxFrame,
 		UnsyncFrames: optFrames,
 	}
 
+	//修改上一帧发送的帧数
+	p.lastSendNum = sendMaxFrame - p.syncId - 1
 	UdpMgr.SendLogicFrame(body, p.udpAddr)
 }
 

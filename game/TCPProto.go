@@ -60,20 +60,32 @@ func (m *TCPManager) RecvLoginReq(data *msg.LoginReq) {
 
 	//已经在线
 	if tmpuser := OnlineUsers.Users[data.Name]; tmpuser != nil {
-		if tmpuser.player != nil && tmpuser.player.udpAddr != nil {
-			log.Info("already logged in ", data.Name)
-			m.SendLoginRsp(&msg.LoginRsp{
-				Success: false,
-			})
-			return
-		}
-		//否则认为是掉线重连
-		log.Info("reconnect ", data.Name)
-		tmpuser.connManager = m
-		m.user = tmpuser
+		if tmpuser.player != nil {
+			if tmpuser.player.udpAddr != nil {
+				log.Info("already logged in ", data.Name)
+				m.SendLoginRsp(&msg.LoginRsp{
+					Success: false,
+				})
+				return
+			} else {
+				//在游戏中重新连接
+				log.Info("reconnect ", data.Name)
+				tmpuser.connManager = m
+				m.user = tmpuser
 
+				m.SendLoginRsp(&msg.LoginRsp{
+					Success: false,
+					Name:    tmpuser.name,
+					Rank:    tmpuser.rank,
+				})
+
+				m.SendMatchRsp(tmpuser.player.matchInfo)
+				return
+			}
+		}
+		//否则已经在线
 		m.SendLoginRsp(&msg.LoginRsp{
-			Success: true,
+			Success: false,
 			Name:    tmpuser.name,
 			Rank:    tmpuser.rank,
 		})
